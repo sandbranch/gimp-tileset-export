@@ -5,13 +5,16 @@
 # files outside GIMP (tests/check.py): with Tiled 1.12.2 (tiled
 # --evaluate and tmxrasterizer, offscreen, throwaway HOME) and with Godot
 # 4.7 (headless, throwaway HOME set inside its Flatpak sandbox); a second
-# GIMP run exports again what Godot changed in between.
+# GIMP run exports again what Godot changed in between. Then, if a
+# headless Chrome and node are there, the dialog on a Broadway display
+# (tests/gui/gui-test.sh).
 #
 # Before and after, it lists the user's own folders of GIMP, Tiled and
 # Godot (tests/snapshot.sh: names, sizes, times) and fails if anything
 # there changed.
 #
 #   tests/run.sh                   all tests
+#   TSE_GUI=0 tests/run.sh         without the Broadway test
 #   GIMP_FLATPAK=0 tests/run.sh    with a native GIMP 3 (gimp-console-3.2
 #                                  or gimp-console on the PATH)
 #   TSE_GODOT=/path/godot tests/run.sh   a native Godot 4.7 instead of the
@@ -115,6 +118,11 @@ echo "== Godot"
 python3 "$here/check.py" 2 || status=1
 echo "== GIMP with fonts (a text layer as a label)"
 gimp_phase fonts
+
+if [ "$TSE_GUI" != 0 ]; then
+    echo "== GUI (Broadway)"
+    "$here/gui/gui-test.sh" || status=1
+fi
 
 echo "== your folders of GIMP, Tiled and Godot"
 "$here/snapshot.sh" > "$out/snapshot-after.txt"
