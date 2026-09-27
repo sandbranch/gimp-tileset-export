@@ -42,5 +42,5 @@ exec flatpak run --no-documents-portal --filesystem="$src" \
    XDG_STATE_HOME='$home/.local/state'; \
    broadwayd --port $port :$display & bw=\$!; trap 'kill \$bw' EXIT; \
    i=0; while [ ! -f '$out/page-open' ] && [ \$i -lt 300 ]; do sleep 0.2; i=\$((i+1)); done; \
-   gimp-3.2 --no-splash --no-fonts \
+   gimp-3.2 --new-instance --no-splash --no-fonts \
    --batch-interpreter python-fu-eval -b \"exec(open('$here/gui-script.py').read())\""
