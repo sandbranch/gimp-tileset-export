@@ -1,0 +1,4 @@
+# test output (profiles, logs, downloaded apps, screenshots)
+tests/output/
+__pycache__/
+*.pyc
