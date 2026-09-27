@@ -1,6 +1,6 @@
 #!/bin/sh
 # Opens the Export Tileset dialog on a Broadway display, does the given
-# steps (those of gimp-plugin-devtools/gui/cdp.mjs, with click, down,
+# steps (those of gimp-devtools/gui/cdp.mjs, with click, down,
 # move and up at positions from the dialog's top left corner) and leaves
 # a screenshot of the page in tests/output/gui/look.png; then stops GIMP.
 # For looking at the layout. Run tests/run.sh first.

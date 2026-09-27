@@ -12,7 +12,7 @@
 tests=$(dirname "$here")
 src=$(dirname "$tests")
 out=$tests/output/gui
-devtools=${GIMP_PLUGIN_DEVTOOLS:-$src/../gimp-plugin-devtools}
+devtools=${GIMP_PLUGIN_DEVTOOLS:-$src/../gimp-devtools}
 cdp="node $devtools/gui/cdp.mjs"
 view=size:${TSE_VIEW:-1400,1000}
 

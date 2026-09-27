@@ -7,7 +7,7 @@
 # tests/run.sh first (it installs the plug-in into the test profile).
 #
 # Needs a headless Chrome (google-chrome or chromium), node 22 and
-# ../gimp-plugin-devtools (or GIMP_PLUGIN_DEVTOOLS) for gui/cdp.mjs.
+# ../gimp-devtools (or GIMP_PLUGIN_DEVTOOLS) for gui/cdp.mjs.
 # Prints PASS or FAIL for each check and exits non-zero if one fails.
 #
 # Copyright 2026 David

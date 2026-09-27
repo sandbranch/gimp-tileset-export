@@ -206,7 +206,7 @@ reloads a changed `.tsx` or `.tsj` if you have no unsaved changes in it
 (else it asks). So keep Tiled open, export from GIMP, and look.
 (Tiled's source, `src/libtiled/tilesetmanager.cpp` and
 `src/tiled/documentmanager.cpp`; the image reload was tested headless,
-see ../gimp-plugin-devtools/docs/level-editors.md.)
+see ../gimp-devtools/docs/level-editors.md.)
 
 Tiled keeps its Wang sets in the same `.tsx`; they survive the next
 export (see above). Other things you change in the tileset in Tiled
@@ -356,7 +356,7 @@ non-zero on a failure. In about one and a half minutes it runs 95 checks:
   `.import`; adds a terrain with Godot's own writer, then GIMP exports
   again and the terrain must still be there.
 - **The dialog** on a Broadway display with a headless Chrome
-  (`tests/gui/gui-test.sh`, using ../gimp-plugin-devtools): OK, Cancel,
+  (`tests/gui/gui-test.sh`, using ../gimp-devtools): OK, Cancel,
   and Repeat without earlier settings; screenshots in
   `tests/output/gui/`.
 
