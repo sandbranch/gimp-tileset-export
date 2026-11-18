@@ -12,7 +12,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 for dir in \
     "$HOME/.config/GIMP" \
-    "$HOME/.var/app/org.gimp.GIMP" \
+    "$HOME/.local/share/gegl-0.4" \
+    "$HOME/.cache/gimp" \
+    "$HOME/.cache/babl" \
     "$HOME/.config/tiled" \
     "$HOME/.local/share/tiled" \
     "$HOME/.cache/tiled" \

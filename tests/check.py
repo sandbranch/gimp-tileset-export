@@ -467,10 +467,18 @@ def godot(*args):
         # the throwaway home, never to ~/.var/app/org.godotengine.Godot.
         exports = ' '.join("%s='%s'" % kv for kv in env.items())
         quoted = ' '.join("'%s'" % a.replace("'", "'\\''") for a in args)
-        cmd = ['flatpak', 'run', '--no-documents-portal', '--command=sh',
-               'org.godotengine.Godot', '-c',
+        cmd = ['flatpak', 'run', '--no-documents-portal', '--filesystem=' + home,
+               '--command=sh', 'org.godotengine.Godot', '-c',
                'export %s; exec /app/bin/godot-bin %s' % (exports, quoted)]
+        # flatpak run itself, outside the sandbox, keeps a cache of the
+        # app's libraries in ~/.var/app/org.godotengine.Godot/.ld.so: it
+        # gets the throwaway home too, and the user's own installation of
+        # Flatpaks (FLATPAK_USER_DIR), where Godot may be installed
         e = dict(os.environ)
+        e.setdefault('FLATPAK_USER_DIR', os.path.join(
+            os.environ.get('XDG_DATA_HOME') or os.path.expanduser('~/.local/share'),
+            'flatpak'))
+        e.update(env)
     p = subprocess.run(cmd, env=e, capture_output=True, text=True, timeout=300)
     return p
 

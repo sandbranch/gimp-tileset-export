@@ -275,8 +275,8 @@ Both files, `tileset-export.py` and `tileset_model.py`, go into a folder
 named `tileset-export` in GIMP's plug-in folder, and
 `tileset-export.py` must be executable. Then restart GIMP.
 
-**Linux, GIMP from your distribution or the Flatpak** (the Flatpak uses
-the same folder, `~/.config/GIMP`):
+**Linux, GIMP 3 from your distribution** (on Debian and Ubuntu
+`sudo apt install gimp`):
 
     mkdir -p ~/.config/GIMP/3.2/plug-ins/tileset-export
     cp tileset-export/*.py ~/.config/GIMP/3.2/plug-ins/tileset-export/
@@ -287,9 +287,8 @@ the same folder, `~/.config/GIMP`):
 copy the two files there. These are GIMP's usual folders; the plug-in
 was not tried on either system.
 
-The plug-in needs GIMP 3.2 with its Python 3 support (part of GIMP 3
-and of the Flatpak); tested with GIMP 3.2.6 (Flatpak). GIMP 3.0 was not
-tried. It adds
+The plug-in needs GIMP 3.2 with its Python 3 support (part of GIMP 3);
+tested with the native GIMP 3.2.8 of Ubuntu. GIMP 3.0 was not tried. It adds
 **File > Export Tileset...** and **File > Repeat Tileset Export**, next
 to GIMP's own Export items.
 
@@ -361,11 +360,12 @@ non-zero on a failure. In about one and a half minutes it runs 95 checks:
   `tests/output/gui/`.
 
 Nothing of yours is touched: GIMP, Tiled and Godot run with throwaway
-profiles and homes in `tests/output/`. The Flatpaks set `XDG_*` after
-`--env`, so the tests set them inside the sandbox
-(`flatpak run --command=sh ... -c 'export XDG_CONFIG_HOME=...; exec ...'`),
-and GIO runs without GVFS (`GIO_USE_VFS=local`), which otherwise writes
-to `~/.var/app/org.gimp.GIMP/data/gvfs-metadata`. `tests/snapshot.sh`
+profiles and homes in `tests/output/`: HOME and `XDG_*` point there.
+The Godot Flatpak sets `XDG_*` after `--env`, so the tests set them
+inside its sandbox (`flatpak run --command=sh ... -c 'export
+XDG_CONFIG_HOME=...; exec ...'`). GIO runs without GVFS
+(`GIO_USE_VFS=local`), which otherwise writes its metadata journal into
+your home. `tests/snapshot.sh`
 lists your folders of GIMP, Tiled and Godot (names, sizes and times)
 before and after the run, which fails if anything there changed.
 
@@ -378,5 +378,5 @@ script adds the one of the same Qt 6.10 from the Flatpak runtime
 the Tiled checks are skipped; without Godot the Godot checks, without
 Chrome and node the dialog test.
 
-`TSE_GUI=0 tests/run.sh` leaves out the dialog test; `GIMP_FLATPAK=0`
-uses a native GIMP; `TSE_GODOT=/path/to/godot` a native Godot 4.7.
+`TSE_GUI=0 tests/run.sh` leaves out the dialog test;
+`TSE_GODOT=/path/to/godot` a native Godot 4.7 instead of the Flatpak.

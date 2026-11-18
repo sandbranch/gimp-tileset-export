@@ -8,12 +8,20 @@ source at tag `4.7.2-stable`), GIMP 3.2.6 (Flatpak) and Aseprite Wizard
 9.8.0. Marks: **[source]** read in the source, **[tested]** run here,
 **UNVERIFIED** not checked.
 
+Update 2026-11-18: GIMP is now used natively only (the GIMP Flatpak is
+no longer supported here). The measurements below were made with the
+GIMP Flatpak in 2026-09 and are kept as they were; the commands are the
+native ones. From inside the Godot Flatpak, `flatpak-spawn --host
+gimp-console-3.2 --version` runs the native GIMP 3.2.8 [tested
+2026-11-18].
+
 **Short answer: yes.** Godot's import plug-ins may run programs, the
 Godot Flatpak may start programs on the host, and a headless GIMP turns
 an XCF into a PNG in about 4.3 seconds. Tested end to end from inside
-the Godot sandbox, without Godot itself: `flatpak-spawn --host flatpak
-run --command=gimp-console-3.2 org.gimp.GIMP ...` wrote a correct PNG in
-4.4 s [tested]. It is how Aseprite Wizard imports Aseprite files.
+the Godot sandbox, without Godot itself: `flatpak-spawn --host` with
+the GIMP of 2026-09 (then a Flatpak) wrote a correct PNG in 4.4 s
+[tested]; with the native GIMP the command is `flatpak-spawn --host
+gimp-console-3.2 ...`. It is how Aseprite Wizard imports Aseprite files.
 
 ## What Godot allows
 
@@ -51,8 +59,8 @@ For `org.godotengine.Godot` 4.7.2 from Flathub (no overrides here)
 
 - `filesystems=host`: Godot sees the home folder, including
   `~/.config/GIMP` and wherever the project is. But **`/tmp` is its
-  own**, not the host's (the GIMP Flatpak does get the host's `/tmp`), so
-  files for GIMP must be under `$HOME`, not in `/tmp`.
+  own**, not the host's, so files for GIMP must be under `$HOME`, not in
+  `/tmp`.
 - Inside, `XDG_CONFIG_HOME` and `XDG_DATA_HOME` point into
   `~/.var/app/org.godotengine.Godot/`, while `HOME` is the real home:
   paths for GIMP must be built from `HOME`.
@@ -60,12 +68,11 @@ For `org.godotengine.Godot` 4.7.2 from Flathub (no overrides here)
   got a connection from inside the sandbox.
 - Session bus `org.freedesktop.Flatpak=talk`: `flatpak-spawn --host`
   exists inside and works (`flatpak-spawn --host true` returns 0), so the
-  sandboxed Godot can run any program on the host, for example
-  `flatpak run org.gimp.GIMP`. (That is full host access; a user
-  override could take it away.)
-- GIMP is not on the host's PATH when it is a Flatpak, so the command is
-  `flatpak-spawn --host flatpak run --command=gimp-console-3.2
-  org.gimp.GIMP ...`, and natively `gimp-console-3.2`.
+  sandboxed Godot can run any program on the host, for example the
+  native `gimp-console-3.2`. (That is full host access; a user override
+  could take it away.)
+- So the command is `flatpak-spawn --host gimp-console-3.2 ...` from a
+  Flatpak Godot, and `gimp-console-3.2` from a native one.
 
 ## How Aseprite Wizard does it (MIT, © 2020 Vinicius Gerevini)
 
@@ -101,7 +108,7 @@ line per connection on 127.0.0.1 (port 29317 by default, or the
 setting `port`, or `GIMP_BLENDER_LINK_PORT`), with a token from
 `~/.local/share/gimp-blender-link/gimp-listener.json` (mode 0600:
 `port`, `token`, `pid`, `version`; written at start, removed at stop;
-a literal `$HOME` path because each Flatpak has its own
+a literal `$HOME` path because a Flatpak Godot has its own
 `XDG_DATA_HOME`). Godot reads it as `OS.get_environment("HOME") +
 "/.local/share/gimp-blender-link/gimp-listener.json"` and talks with
 `StreamPeerTCP`.
@@ -122,8 +129,7 @@ runs with the listener.
 
 `OS.execute()` of `gimp-console-3.2 --no-interface --no-fonts --no-data
 --batch-interpreter=python-fu-eval -b "<load, flatten, export PNG>"
---quit`, through `flatpak-spawn --host flatpak run
---command=gimp-console-3.2 org.gimp.GIMP` when Godot is sandboxed.
+--quit`, through `flatpak-spawn --host` when Godot is sandboxed.
 Measured [tested]: 4.3 s for each file (the load and export itself about
 0.7 s), the first run with a new GIMP profile about 35 s. A headless
 GIMP never hands its work to a running GIMP (`--no-interface` forces a
@@ -148,7 +154,7 @@ Needs no running GIMP, but the editor freezes for 4 seconds per XCF.
           ask the listener (A); if there is none, run gimp-console (B)
           Image.load_from_file(png) -> PortableCompressedTexture2D
             .create_from_image(LOSSLESS) -> ResourceSaver.save(save_path + ".res")
-      settings: the GIMP command (native or Flatpak), the listener on/off,
+      settings: the GIMP command, the listener on/off,
                 "bake": keep a PNG next to the XCF for machines without GIMP
 
 With Tileset Export the same importer could also read the XCF's
