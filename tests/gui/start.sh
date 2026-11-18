@@ -31,6 +31,24 @@ grep -q show-welcome-dialog "$profile/gimprc" 2>/dev/null ||
   echo '(show-welcome-dialog no)' >> "$profile/gimprc"
 # the windows where GIMP puts them by default, not where they were
 rm -f "$profile/sessionrc"
+# the interface font the clicks were measured with: GTK's "Sans" is
+# DejaVu Sans, not the system's default (Noto Sans on Ubuntu has taller
+# rows), as gimp-devtools/gimp-run.sh does for the other repositories
+mkdir -p "$home/.config/fontconfig"
+cat > "$home/.config/fontconfig/fonts.conf" <<'FONTS'
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+<fontconfig>
+  <match target="pattern">
+    <test name="family"><string>Sans</string></test>
+    <edit name="family" mode="assign" binding="strong"><string>DejaVu Sans</string></edit>
+  </match>
+  <match target="pattern">
+    <test name="family"><string>sans-serif</string></test>
+    <edit name="family" mode="prepend" binding="strong"><string>DejaVu Sans</string></edit>
+  </match>
+</fontconfig>
+FONTS
 exec env GDK_BACKEND=broadway BROADWAY_DISPLAY=:$display \
   GIMP3_DIRECTORY="$profile" TSE_OUT="$out" \
   TSE_GUI_MODE="${TSE_GUI_MODE:-export}" \
